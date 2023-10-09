@@ -10,8 +10,7 @@ window = tk.Tk()
 window.title("Ping Tester")
 
 # 핑 결과를 표시할 레이블
-ping_label = tk.Label(window, text="Ping: N/A ms")
-ping_label.pack()
+
 
 def ping_thread():
     url = 'http://localhost:3000/ping'  # 서버의 URL로 변경해야 합니다.
@@ -32,7 +31,26 @@ def ping_thread():
             time.sleep(1)  # 1초 대기
 
         average_ping = sum(ping_times) / len(ping_times)
-        ping_label.config(text=f'Average Ping: {average_ping:.2f} ms')
+        # ping_label.config(text=f'Average Ping: {average_ping:.2f} ms')
+        update_ping_label(average_ping)
+
+def update_ping_label(average_ping):
+    ping_label.config(text=f'Average Ping: {average_ping:.2f} ms')
+
+
+ping_label = tk.Label(window, text='Average Ping: -')
+ping_label.pack()
+
+# GUI 업데이트 함수를 호출하여 시작하고 정기적으로 예약합니다.
+ping_thread = threading.Thread(target=ping_thread)
+ping_thread.daemon = True
+ping_thread.start()
+
+window.mainloop()  # Tkinter의 메인 루프 실행
+
+
+
+
 
 ping_thread = threading.Thread(target=ping_thread)
 ping_thread.daemon = True
@@ -50,7 +68,6 @@ data = {
     'id': 'example',
     'pd':'example1'
 
-    
 }
 headers={}
 url3='http://127.0.0.1:3000/signin'
@@ -58,26 +75,45 @@ url2='http://127.0.0.1:3000/user'
 
 response = requests.post(url3, data=data, headers=headers)
 print(response.text)
+
 response_data=json.loads(response.text)
 token = {'token':response_data.get('message')}
 print('ttttasdasd',token)
 response2 = requests.post(url2, json=data, headers=token)
-print(response2.text)
+print('dfdsf',response2.text)
 
 data2={
-  'headers':'matching',
-  'id':'ysj',
+#   'headers':'matching',
+#   'id':'ysj',
+'token':token
 
+}
+data3={
+#   'headers':'matching',
+#   'id':'ysj',
+'headers':'matching'
 
-    'token':token["token"]
-    
 }
 url = f'ws://127.0.0.1:3000'
+ws = websocket.create_connection(url)
+def data_receive():
+    while True:
+        data = ws.recv()
+        # 받은 데이터 처리
+        q.put(data)
+            
+        print(q.get())
+q = queue.Queue()
+thread = threading.Thread(target=data_receive, args=())
+thread.daemon = True
+thread.start()
+
 try:
-    ws = websocket.create_connection(url)
+   
     ws.send(json.dumps(data2))
-    response = ws.recv()
-    print(response)
+    data_receive()
+    ws.send(json.dumps(data3))
+    
 except Exception as e:
     print(f'Error: {e}')
 
