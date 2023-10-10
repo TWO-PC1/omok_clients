@@ -18,8 +18,14 @@ current_player=1
 BOARD_SIZE = 15
 board = np.zeros([BOARD_SIZE, BOARD_SIZE], dtype=str)
 
+<<<<<<< HEAD
+WIDTH, HEIGHT = 800, 800# 두 값이 일치한다는 전제조건 하에 코드를 작성함
+STONE_SIZE = int(WIDTH / BOARD_SIZE-(WIDTH / BOARD_SIZE)/10)
+blank = (WIDTH-STONE_SIZE*(BOARD_SIZE+1))/2 # 여백 설정
+=======
 WIDTH, HEIGHT = 800, 800
 STONE_SIZE = int(WIDTH / BOARD_SIZE)
+>>>>>>> cc9d51c67bd271b5f1971eaef192d1bb5ef5de51
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 BROWN = (160, 90, 40)
@@ -34,6 +40,54 @@ pygame.display.set_caption("오목 게임")
 font = pygame.font.SysFont("arial",30,True,True)
 
 
+<<<<<<< HEAD
+def draw_board():
+    for i in range(BOARD_SIZE-1):
+        for j in range(BOARD_SIZE-1):
+              # 그리드 그리기
+            pygame.draw.rect(screen, BLACK, ((j+1)*STONE_SIZE+blank, (i+1)*STONE_SIZE+blank, STONE_SIZE, STONE_SIZE), 2)
+
+    for i in range(BOARD_SIZE):
+        for j in range(BOARD_SIZE):
+            if board[i][j] == '1':
+                # 플레이어 1의 돌 그리기 (검은색 돌)
+                stone_x = j*STONE_SIZE+STONE_SIZE//2 + blank+STONE_SIZE/2
+                stone_y = i*STONE_SIZE+STONE_SIZE//2 + blank+STONE_SIZE/2
+                pygame.draw.circle(screen, BLACK, (stone_x, stone_y), STONE_SIZE//2-2)
+            elif board[i][j] == '2':
+                # 플레이어 2의 돌 그리기 (흰색 돌)
+                stone_x = j*STONE_SIZE+STONE_SIZE//2 + blank+STONE_SIZE/2
+                stone_y = i*STONE_SIZE+STONE_SIZE//2 + blank+STONE_SIZE/2
+                pygame.draw.circle(screen, WHITE, (stone_x, stone_y), STONE_SIZE//2-2)
+            elif board[i][j] == 'w':
+                # 이긴 돌 표시 (금색 돌)
+                stone_x = j*STONE_SIZE+STONE_SIZE//2 + blank+STONE_SIZE/2
+                stone_y = i*STONE_SIZE+STONE_SIZE//2 + blank+STONE_SIZE/2
+                pygame.draw.circle(screen, GOLD, (stone_x, stone_y), STONE_SIZE//2-2)
+            elif board[i][j] == 'P':
+                stone_x = j*STONE_SIZE+STONE_SIZE//2 + blank+STONE_SIZE/2
+                stone_y = i*STONE_SIZE+STONE_SIZE//2 + blank+STONE_SIZE/2
+                pygame.draw.circle(screen, RED, (stone_x, stone_y), STONE_SIZE//2-2,2)
+            elif board[i][j] == 'x':
+                # 금지된 영역 표시 (빨간 선)
+                  
+                line_x1 = j*STONE_SIZE + blank+STONE_SIZE/2
+                line_y1 = i*STONE_SIZE + blank+STONE_SIZE/2
+                line_x2 = (j+1)*STONE_SIZE + blank+STONE_SIZE/2
+                line_y2 = (i+1)*STONE_SIZE + blank+STONE_SIZE/2
+                pygame.draw.line(screen, RED, (line_x1, line_y1), (line_x2, line_y2), 5)
+                line_x3 = (j+1)*STONE_SIZE + blank+STONE_SIZE/2
+                line_y3 = i*STONE_SIZE + blank+STONE_SIZE/2
+                line_x4 = j*STONE_SIZE + blank+STONE_SIZE/2
+                line_y4 = (i+1)*STONE_SIZE + blank+STONE_SIZE/2
+                pygame.draw.line(screen, RED, (line_x3, line_y3), (line_x4, line_y4), 5)
+
+
+            
+                
+   
+    
+=======
 
 def draw_board():
     for i in range(BOARD_SIZE):
@@ -51,6 +105,7 @@ def draw_board():
 
                 
                 
+>>>>>>> cc9d51c67bd271b5f1971eaef192d1bb5ef5de51
 
 def rule(player):
     if player ==1:
@@ -63,7 +118,12 @@ def cross():
             board[i][j] == board[i+1][j-1] and \
             board[i+1][j-1] == board[i+2][j-2] and \
             board[i+2][j-2] == board[i+3][j-3] and \
+<<<<<<< HEAD
+            board[i+3][j-3] == board[i+4][j-4] and \
+            board[i][j]!= "P"   :
+=======
             board[i+3][j-3] == board[i+4][j-4]:
+>>>>>>> cc9d51c67bd271b5f1971eaef192d1bb5ef5de51
 
                 board[i][j] = "w"
                 board[i+1][j-1] = "w"
@@ -79,7 +139,12 @@ def cross():
             board[i][j] == board[i-1][j-1] and \
             board[i-1][j-1] == board[i-2][j-2] and \
             board[i-2][j-2] == board[i-3][j-3] and \
+<<<<<<< HEAD
+            board[i-3][j-3] == board[i-4][j-4] and \
+            board[i][j]!= "P"   :
+=======
             board[i-3][j-3] == board[i-4][j-4]:
+>>>>>>> cc9d51c67bd271b5f1971eaef192d1bb5ef5de51
                 board[i][j] = "w"
                 board[i-1][j-1] = "w"
                 board[i-2][j-2] = "w"
@@ -101,7 +166,12 @@ def cross():
             board[i][j] == board[i][j+1] and \
             board[i][j+1] == board[i][j+2] and \
             board[i][j+2] == board[i][j+3] and \
+<<<<<<< HEAD
+            board[i][j+3] == board[i][j+4] and \
+            board[i][j]!= "P"   :
+=======
             board[i][j+3] == board[i][j+4]:
+>>>>>>> cc9d51c67bd271b5f1971eaef192d1bb5ef5de51
                 board[i][j] = "w"
                 board[i][j+1] = "w"
                 board[i][j+2] = "w"
@@ -115,7 +185,12 @@ def cross():
             board[i][j] == board[i+1][j] and \
             board[i+1][j] == board[i+2][j] and \
             board[i+2][j] == board[i+3][j] and \
+<<<<<<< HEAD
+            board[i+3][j] == board[i+4][j] and \
+            board[i][j]!= "P"   :
+=======
             board[i+3][j] == board[i+4][j]:
+>>>>>>> cc9d51c67bd271b5f1971eaef192d1bb5ef5de51
                 board[i][j] = "w"
                 board[i+1][j] = "w"
                 board[i+2][j] = "w"
@@ -130,6 +205,10 @@ def cross():
                 print('세로yes!')
                 return True
 game = False
+<<<<<<< HEAD
+Turn = False
+=======
+>>>>>>> cc9d51c67bd271b5f1971eaef192d1bb5ef5de51
 def button_click_action():
     global game
     print("게임 시작")
@@ -201,13 +280,54 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
+<<<<<<< HEAD
+           
+=======
         
+>>>>>>> cc9d51c67bd271b5f1971eaef192d1bb5ef5de51
         
                     # Check if the mouse click is within the button area
             mouse_x, mouse_y = pygame.mouse.get_pos()
             mouse_pos = pygame.mouse.get_pos()
             if game==True:
                 x, y = event.pos
+<<<<<<< HEAD
+                pos1=(x - blank-STONE_SIZE/2) / STONE_SIZE
+                pos2=(y - blank-STONE_SIZE/2) / STONE_SIZE
+                j, i = int((x - blank-STONE_SIZE/2) / STONE_SIZE), int((y - blank-STONE_SIZE/2) / STONE_SIZE)  # blank를 빼서 좌표를 보정
+                print(i,j)
+                print(pos1,pos2)
+               
+
+                if not i>BOARD_SIZE-1 and not j>BOARD_SIZE-1 and pos1>0 and pos2>0:
+                    if board[i][j] == ""or board[i][j] == "P":
+                        if Turn==True:
+                           
+                            if board[i][j] == "P":
+                                
+                                board[i][j] = current_player
+                                if cross():
+                                    print("플레이어 {} 승리!".format(current_player))
+                                    win = current_player
+                        
+                                current_player = 3 - current_player  # 1 -> 2, 2 -> 1
+                                Turn=False
+                            else:
+                                Turn=False
+                                print('위치 불일치')
+                                for i in range(BOARD_SIZE):
+                                    for j in range(BOARD_SIZE):
+                                        if board[i, j] == 'P':
+                                            board[i, j] = ''
+
+                                
+                        else:
+                             board[i][j] = "P"
+                             Turn=True
+                            
+                             
+                        
+=======
                 j, i = int(x / STONE_SIZE), int(y / STONE_SIZE)
                 print(i,j)
                 if not i>BOARD_SIZE-1 and not j>BOARD_SIZE-1:
@@ -218,6 +338,7 @@ while running:
                             win = current_player
                             
                         current_player = 3 - current_player  # 1 -> 2, 2 -> 1
+>>>>>>> cc9d51c67bd271b5f1971eaef192d1bb5ef5de51
                         
                     else:
                         print('돌이 있는 자리입니다')
