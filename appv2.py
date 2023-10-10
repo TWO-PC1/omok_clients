@@ -77,6 +77,8 @@ def draw_board():
                 pygame.draw.line(screen, RED, (line_x3, line_y3), (line_x4, line_y4), 5)
 
 
+
+
             
                 
    
