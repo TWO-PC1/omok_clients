@@ -7,7 +7,8 @@ import queue
 import websocket
 import time
 import tkinter as tk
-
+import re
+import ast
 
 
 
@@ -17,7 +18,7 @@ current_player=1
 
 BOARD_SIZE = 15
 board = np.zeros([BOARD_SIZE, BOARD_SIZE], dtype=str)
-
+online_board=0
 WIDTH, HEIGHT = 800, 800# 두 값이 일치한다는 전제조건 하에 코드를 작성함
 STONE_SIZE = int(WIDTH / BOARD_SIZE-(WIDTH / BOARD_SIZE)/10)
 blank = (WIDTH-STONE_SIZE*(BOARD_SIZE+1))/2 # 여백 설정
@@ -165,6 +166,8 @@ def cross():
 
                 print('세로yes!')
                 return True
+Gturn=2
+tturn=1
 game = False
 Turn = False
 def button_click_action():
@@ -172,49 +175,89 @@ def button_click_action():
     print("게임 시작")
     game=True
 
-def token():
-    data = {
-        'id': 'example',
-        'pd':'example1' #임시데이터
 
-    }
-    headers={}
-    url3='http://127.0.0.1:3000/signin'
-    url2='http://127.0.0.1:3000/user'
 
-    response = requests.post(url3, data=data, headers=headers)# 로그인 및 토큰 발급 과정
-    print(response.text)
-    response_data=json.loads(response.text)
-    token = {'token':response_data.get('message')}
-
-    print('ttttasdasd',token)
-    response2 = requests.post(url2, json=data, headers=token)# 토큰 1차 검증 과정 
-    print('dfdsf',response2.text)
-    return token
-    
-def open_websocket_connection(token):
     # WebSocket 연결 열기
-    data2={
-#   'headers':'matching',
-#   'id':'ysj',
-'token':token
 
-    }
-    data3={
-#   'headers':'matching',
-#   'id':'ysj',
-'headers':'matching'
-
-}
-    url = f'ws://127.0.0.1:3000'
-    ws = websocket.create_connection(url)
-    ws.send(json.dumps(data2))
-    ws.send(json.dumps(data3))
 
 
     # 연결 반환
-    return ws
+    
+ 
+online_mode=False
 
+
+
+
+ws=0
+
+def data_receive():
+    global tturn,Gturn
+    
+    try:
+        global ws 
+        url = f'ws://127.0.0.1:3000'
+        ws = websocket.create_connection(url)
+    except:
+        print('오프라인 모드')
+    while True:
+        global online_board,online_mode,game,board
+        data = ws.recv()
+        print(data)
+        # 받은 데이터 처리
+        
+        
+        if data=='매칭':
+            online_mode=True
+            game=True
+            print('조아')
+
+        elif data==['1']:
+            print('dp')
+            Gturn=1
+            tturn=1
+        elif data==['2']:
+            print('ddp')
+            Gturn=2
+            tturn=1
+      
+        elif online_mode:
+            try:
+                data=data[1:]
+                
+                data = re.sub(r'\[|\]', '', data)
+                result = data.split(",")
+                
+                if Gturn==tturn:
+                    
+                    print('b',result)
+                    board[int(result[0])][int(result[1])]=tturn
+                    print(tturn)
+                else:
+                    print('c',result)
+                    board[int(result[0])][int(result[1])]=3-Gturn
+                    tturn=Gturn
+            except:
+                pass
+
+            
+            
+            
+           
+
+            
+                
+            
+                # print(q.get())
+            
+       
+
+data3={
+#   'headers':'matching',
+  'id':'ysj',
+'headers':'matching'
+
+}
 
 button_width, button_height = 200, 50
 
@@ -253,7 +296,10 @@ while running:
                
 
                 if not i>BOARD_SIZE-1 and not j>BOARD_SIZE-1 and pos1>0 and pos2>0:
-                    if board[i][j] == ""or board[i][j] == "P":
+                    if online_mode:
+                        ws.send(json.dumps({'x':i,'y':j}))
+
+                    elif board[i][j] == ""or board[i][j] == "P":
                         if Turn==True:
                            
                             if board[i][j] == "P":
@@ -290,6 +336,13 @@ while running:
                     button_click_action()
                 elif text_rect2.collidepoint(mouse_pos):
                     print("Multiplay button clicked!")
+                    q = queue.Queue()
+                    thread = threading.Thread(target=data_receive, args=())
+                    thread.daemon = True
+                    thread.start()
+                    
+             
+                  
                 elif text_rect4.collidepoint(mouse_pos):
                     print("THE Oooomok button clicked!")  
 
