@@ -166,8 +166,7 @@ def cross():
 
                 print('세로yes!')
                 return True
-Gturn=2
-tturn=1
+
 game = False
 Turn = False
 def button_click_action():
@@ -192,7 +191,7 @@ online_mode=False
 ws=0
 
 def data_receive():
-    global tturn,Gturn
+    
     
     try:
         global ws 
@@ -212,31 +211,25 @@ def data_receive():
             game=True
             print('조아')
 
-        elif data==['1']:
-            print('dp')
-            Gturn=1
-            tturn=1
-        elif data==['2']:
-            print('ddp')
-            Gturn=2
-            tturn=1
       
-        elif online_mode:
+    
+        elif online_mode and game:
             try:
+                if cross():
+                    print("플레이어 {} 승리!".format(current_player))
+                    win = current_player
                 data=data[1:]
                 
                 data = re.sub(r'\[|\]', '', data)
                 result = data.split(",")
                 
-                if Gturn==tturn:
+                
                     
-                    print('b',result)
-                    board[int(result[0])][int(result[1])]=tturn
-                    print(tturn)
-                else:
-                    print('c',result)
-                    board[int(result[0])][int(result[1])]=3-Gturn
-                    tturn=Gturn
+                print('b',result)
+                board[int(result[1])][int(result[2])]=result[0]
+                
+                
+                
             except:
                 pass
 
@@ -298,7 +291,7 @@ while running:
                 if not i>BOARD_SIZE-1 and not j>BOARD_SIZE-1 and pos1>0 and pos2>0:
                     if online_mode:
                         ws.send(json.dumps({'x':i,'y':j}))
-
+                        
                     elif board[i][j] == ""or board[i][j] == "P":
                         if Turn==True:
                            
